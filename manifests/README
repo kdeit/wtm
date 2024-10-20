@@ -1,0 +1,23 @@
+0 - Общие настройки:  
+    kubectl apply -f ./00_configs
+1 - БД: 
+    helm upgrade --install -f ./01_db/postgres-config.yaml postgres oci://registry-1.docker.io/bitnamicharts/postgresql
+2 - RabbitMq:
+    helm upgrade --install -f ./02_rabbit/rabbit.yaml rabbit oci://registry-1.docker.io/bitnamicharts/rabbitmq
+3 - KeyCloak
+    kubectl -n default create secret generic realm-secret --from-file=./01_keycloak/realms/realm-otus.json
+    helm upgrade --install -f ./03_keycloak/keycloak.yaml keycloak oci://registry-1.docker.io/bitnamicharts/keycloak
+4 - Prometheus
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo update
+    helm upgrade --install -f ./04_prometheus/prometheus.yml prometheus prometheus-community/prometheus
+5 - Grafana
+    helm repo add grafana https://grafana.github.io/helm-charts
+    helm repo update
+    helm upgrade --install -f ./05_grafana/grafana.yaml grafana grafana/grafana
+6 - При необходимости миграции БД: 
+    kubectl apply -f ./06_seeding
+7 - Gate: 
+    kubectl apply -f ./07_gate
+8 - Clients: 
+    kubectl apply -f ./08_clients

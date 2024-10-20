@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gate-asp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gate-asp
+  template:
+    metadata:
+      labels:
+        app: gate-asp
+    spec:
+      containers:
+      - name: gate-asp
+        image: kdeit/wtm-gate-asp:latest
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: app-config
+          - secretRef:
+              name: app-config
