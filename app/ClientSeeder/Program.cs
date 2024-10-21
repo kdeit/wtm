@@ -1,6 +1,6 @@
 using Bogus;
 using Microsoft.EntityFrameworkCore;
-using WTM.Client;
+using WTM.ClientDAL;
 using WTM.Models;
 
 var builder = WebApplication.CreateBuilder(args);

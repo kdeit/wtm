@@ -10,5 +10,5 @@ public class User : BaseEntity
     [EmailAddress] public string Email { get; set; }
     public UserRoleEnum RolesFlag { get; set; }
 
-    public int CompanyId { get; set; }
+    public int? CompanyId { get; set; }
 }

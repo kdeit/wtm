@@ -1,32 +1,39 @@
+using Assistance;
 using Microsoft.EntityFrameworkCore;
-using OtusKdeBus;
 using OpenTelemetry.Metrics;
-using Client.BusConsumers;
-using WTM.ClientDAL;
+using OtusKdeBus;
+using OtusKdeDAL.BusConsumers;
+using WTM.AssistanceDAL;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddHttpClient();
 builder.Services.AddScoped<IBusConsumer, BusConsumer>();
 builder.Services.AddScoped<IBusProducer, BusProducer>();
 builder.Services.AddScoped<AssistanceBusConsumer>();
+builder.Services.AddScoped<IncidentCreatedSaga>();
 
-var connectionString = "Host=localhost;Database=otus;Username=postgres;Password=postgres;Port=5432";
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost";
+    options.InstanceName = "wtm";
+});
+
+var connectionString = "Host=localhost;Database=wtm_assistance;Username=postgres;Password=postgres;Port=5432";
 if (!builder.Environment.IsDevelopment())
 {
-    var DB_HOST = Environment.GetEnvironmentVariable("DB_HOST");
-    var DB_PORT = Environment.GetEnvironmentVariable("DB_PORT");
-    var DB_NAME = Environment.GetEnvironmentVariable("DB_NAME");
-    var DB_USER = Environment.GetEnvironmentVariable("DB_USER");
-    var DB_PASSWORD = Environment.GetEnvironmentVariable("DB_PASSWORD");
+    var DB_HOST = Environment.GetEnvironmentVariable("ASSISTANCE_DB_HOST");
+    var DB_PORT = Environment.GetEnvironmentVariable("ASSISTANCE_DB_PORT");
+    var DB_NAME = Environment.GetEnvironmentVariable("ASSISTANCE_DB_NAME");
+    var DB_USER = Environment.GetEnvironmentVariable("ASSISTANCE_DB_USER");
+    var DB_PASSWORD = Environment.GetEnvironmentVariable("ASSISTANCE_DB_PASSWORD");
     connectionString =
         $"Host={DB_HOST};Database={DB_NAME};Username={DB_USER};Password={DB_PASSWORD};Port={DB_PORT}";
 }
 
-builder.Services.AddDbContext<ClientContext>(
+builder.Services.AddDbContext<AssistanceContext>(
     opt => opt.UseNpgsql(connectionString)
 );
-
 
 builder.Services.AddOpenTelemetry().WithMetrics(builder =>
 {
@@ -48,10 +55,14 @@ var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
-var consumer1 = services.GetService<AssistanceBusConsumer>();
-consumer1.Init();
+var context = services.GetRequiredService<AssistanceContext>();
+//context.Database.EnsureDeleted();
+context.Database.EnsureCreated();
+
+var transaction = services.GetService<IncidentCreatedSaga>();
+transaction.handle();
 
 app.MapControllers();
 app.MapPrometheusScrapingEndpoint();
-Console.WriteLine("Start «Client» service");
+Console.WriteLine("Start «Assistance» service");
 app.Run();

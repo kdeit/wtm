@@ -1,16 +1,16 @@
 using OtusKdeBus;
 using OtusKdeBus.Model.Client;
-using WTM.AssistanceDAL;
+using WTM.ClientDAL;
 
-namespace AssistanceSF.BusConsumers;
+namespace Client.BusConsumers;
 
 public class AssistanceBusConsumer
 {
     private IBusConsumer _consumer;
     private IBusProducer _producer;
-    private AssistanceContext _cnt;
+    private ClientContext _cnt;
 
-    public AssistanceBusConsumer(IBusConsumer busConsumer, AssistanceContext context, IBusProducer producer)
+    public AssistanceBusConsumer(IBusConsumer busConsumer, ClientContext context, IBusProducer producer)
     {
         _consumer = busConsumer;
         _cnt = context;
@@ -21,18 +21,18 @@ public class AssistanceBusConsumer
     {
         Action<AssistanceIncidentCreatedEvent> action = async (x) =>
         {
-            Console.WriteLine($"Assistance SF:: assistance incident created with {x.IncidentId} - {x.UserId}");
+            Console.WriteLine($"Client:: assistance incident created with {x.IncidentId} - {x.UserId}");
             var random = new Random();
             Thread.Sleep(random.Next(300, 1000));
             var b = random.Next(2);
-            Console.WriteLine($"Send to SF :: {x.IncidentId} with result ${b}");
+            Console.WriteLine($"Is pharmacy has Access to support :: {x.IncidentId} with result ${b}");
             if (b == 1)
             {
-                _producer.SendMessage(new AssistanceSfSyncSuccessEvent() { IncidentId = x.IncidentId });
+                _producer.SendMessage(new ClientSupportSuccessCheckedEvent() { IncidentId = x.IncidentId });
             }
             else
             {
-                _producer.SendMessage(new AssistanceSfSyncErrorEvent() { IncidentId = x.IncidentId });
+                _producer.SendMessage(new ClientSupportErrorCheckedEvent() { IncidentId = x.IncidentId });
             }
         };
         _consumer.OnAssistanceIncidentCreated("banan", action);

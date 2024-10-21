@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OtusKdeBus;
 using OtusKdeBus.Model.Client;
+using WTM.ClientDAL;
 using WTM.Models;
 
 namespace WTM.Client.Controllers;

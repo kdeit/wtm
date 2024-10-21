@@ -2,16 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WTM.Models;
 
-public class UserCreateUpdateRequest
+public class GroupCreateRequest
 {
-    public UserCreateUpdateRequest()
+    public GroupCreateRequest()
     {
-        Enabled = true;
+        Status = Status.Enabled;
     }
 
-    [EmailAddress] public string Email { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Password { get; set; }
-    public bool Enabled { get; set; }
+    public Status Status { get; set; }
+    public string Name { get; set; }
 }

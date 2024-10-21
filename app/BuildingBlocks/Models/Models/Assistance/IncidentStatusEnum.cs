@@ -1,6 +1,8 @@
 namespace WTM.Models;
 
-public enum IncidentStatusEnum
+public enum IncidentStatus
 {
-    
+    CREATED,
+    OPEN,
+    CLOSED
 }

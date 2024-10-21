@@ -8,11 +8,11 @@ namespace WTM.Reader.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class GroupController : Controller
+public class Posting : Controller
 {
     private readonly ReaderContext _cnt;
 
-    public GroupController(ReaderContext context)
+    public Posting(ReaderContext context)
     {
         _cnt = context;
     }

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WTM.Models;
 
-namespace WTM.Client;
+namespace WTM.ReaderDAL;
 
 public class ReaderContext : DbContext
 {

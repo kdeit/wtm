@@ -3,13 +3,13 @@ using WTM.Models;
 
 namespace WTM.LogDAL;
 
-public class Log2024Context : DbContext
+public class Log2023Context : DbContext
 {
-    public Log2024Context()
+    public Log2023Context()
     {
     }
 
-    public Log2024Context(DbContextOptions<Log2024Context> options) : base(options)
+    public Log2023Context(DbContextOptions<Log2023Context> options) : base(options)
     {
     }
 

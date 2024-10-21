@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WTM.Models;
 
-namespace WTM.Client;
+namespace WTM.ClientDAL;
 
 public class ClientContext : DbContext
 {

@@ -1,9 +1,15 @@
+using AssistanceSF.BusConsumers;
 using Microsoft.EntityFrameworkCore;
-using OpenTelemetry.Metrics;
-using WTM.ReaderDAL;
+using OtusKdeBus;
+using WTM.AssistanceDAL;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
+
+builder.Services.AddScoped<IBusConsumer, BusConsumer>();
+builder.Services.AddScoped<IBusProducer, BusProducer>();
+builder.Services.AddScoped<AssistanceBusConsumer>();
+
+
 var connectionString = "Host=localhost;Database=wtm_assistance;Username=postgres;Password=postgres;Port=5432";
 if (!builder.Environment.IsDevelopment())
 {
@@ -15,35 +21,15 @@ if (!builder.Environment.IsDevelopment())
     connectionString =
         $"Host={DB_HOST};Database={DB_NAME};Username={DB_USER};Password={DB_PASSWORD};Port={DB_PORT}";
 }
-builder.Services.AddDbContext<ReaderContext>(
+builder.Services.AddDbContext<AssistanceContext>(
     opt => opt.UseNpgsql(connectionString)
 );
-
-builder.Services.AddOpenTelemetry().WithMetrics(builder =>
-{
-    builder.AddPrometheusExporter();
-    builder.AddMeter("Microsoft.AspNetCore.Hosting",
-        "Microsoft.AspNetCore.Server.Kestrel");
-    builder.AddView("http.server.request.duration",
-        new ExplicitBucketHistogramConfiguration
-        {
-            Boundaries = new double[]
-            {
-                0, 0.005, 0.01, 0.025, 0.05,
-                0.075, 0.1, 0.25, 0.5, 0.75, 1, 2.5, 5, 7.5, 10
-            }
-        });
-});
 
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
-var context = services.GetRequiredService<ReaderContext>();
-//context.Database.EnsureDeleted();
-context.Database.EnsureCreated();
+var consumer1 = services.GetService<AssistanceBusConsumer>();
+consumer1.Init();
 
-app.MapControllers();
-app.MapPrometheusScrapingEndpoint();
-Console.WriteLine("Start «Reader» service");
 app.Run();

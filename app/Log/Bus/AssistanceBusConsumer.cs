@@ -1,19 +1,25 @@
+using System.Text.Json;
 using OtusKdeBus;
 using OtusKdeBus.Model.Client;
-using WTM.ClientDAL;
+using WTM.LogDAL;
 
-namespace Client.BusConsumers;
+namespace Log.BusConsumers;
 
 public class AssistanceBusConsumer
 {
     private IBusConsumer _consumer;
     private IBusProducer _producer;
-    private ClientContext _cnt;
+    private Log2023Context _cnt2023;
+    private Log2024Context _cnt2024;
 
-    public AssistanceBusConsumer(IBusConsumer busConsumer, ClientContext context, IBusProducer producer)
+    public AssistanceBusConsumer(IBusConsumer busConsumer,
+        Log2023Context context2023,
+        Log2024Context context2024,
+        IBusProducer producer)
     {
         _consumer = busConsumer;
-        _cnt = context;
+        _cnt2023 = context2023;
+        _cnt2024 = context2024;
         _producer = producer;
     }
 
@@ -21,20 +27,25 @@ public class AssistanceBusConsumer
     {
         Action<AssistanceIncidentCreatedEvent> action = async (x) =>
         {
-            Console.WriteLine($"Client:: assistance incident created with {x.IncidentId} - {x.UserId}");
-            var random = new Random();
-            Thread.Sleep(random.Next(300, 1000));
-            var b = random.Next(2);
-            Console.WriteLine($"Is pharmacy has Access to support :: {x.IncidentId} with result ${b}");
-            if (b == 1)
+            var year = DateTime.Now.Year;
+            var nv = new WTM.Models.Log()
             {
-                _producer.SendMessage(new ClientSupportSuccessCheckedEvent() { IncidentId = x.IncidentId });
-            }
-            else
+                DateCreated = DateTime.UtcNow,
+                EventName = typeof(AssistanceIncidentCreatedEvent).FullName,
+                Payload = JsonSerializer.Serialize(x)
+            };
+            switch (year)
             {
-                _producer.SendMessage(new ClientSupportErrorCheckedEvent() { IncidentId = x.IncidentId });
+                case (2024):
+                    _cnt2024.Add(nv);
+                    _cnt2024.SaveChanges();
+                    break;
+                case (2023):
+                    _cnt2023.Add(nv);
+                    _cnt2023.SaveChanges();
+                    break;
             }
         };
-        _consumer.OnAssistanceIncidentCreated("banan", action);
+        _consumer.OnAssistanceIncidentCreated("oooorange", action);
     }
 }

@@ -2,13 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WTM.Models;
 
-public class GroupCreateRequest
+public class IncidentCreateRequest
 {
-    public GroupCreateRequest()
-    {
-        Status = Status.Enabled;
-    }
-
-    public Status Status { get; set; }
-    public string Name { get; set; }
+    public string Subject { get; set; }
+    public string Content { get; set; }
 }
