@@ -58,6 +58,16 @@ public class BusConsumer : IBusConsumer
     {
         this.Consume(queue_name, MessageType.INCIDENT_CREATED, fn);
     }
+    
+    public void OnAssistanceIncidentConfirmed(string queue_name, Action<AssistanceIncidentConfirmedEvent> fn)
+    {
+        this.Consume(queue_name, MessageType.INCIDENT_CONFIRMED, fn);
+    }
+    
+    public void OnAssistanceIncidentReverted(string queue_name, Action<AssistanceIncidentRevertedEvent> fn)
+    {
+        this.Consume(queue_name, MessageType.INCIDENT_REVERTED, fn);
+    }
 
     public void OnAssistanceSfSyncSuccessCreated(string queue_name, Action<AssistanceSfSyncSuccessEvent> fn)
     {
