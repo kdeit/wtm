@@ -18,5 +18,5 @@ public class AssistanceContext : DbContext
         modelBuilder.Entity<Incident>();
     }
 
-    public DbSet<Group> Incidents { get; set; }
+    public DbSet<Incident> Incidents { get; set; }
 }

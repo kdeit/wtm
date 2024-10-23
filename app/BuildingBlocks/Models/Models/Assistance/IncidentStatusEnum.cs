@@ -4,5 +4,6 @@ public enum IncidentStatus
 {
     CREATED,
     OPEN,
-    CLOSED
+    CLOSED,
+    ERROR,
 }

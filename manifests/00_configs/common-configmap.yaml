@@ -5,23 +5,23 @@ metadata:
   labels:
     app: postgres
 data:
-  DB_HOST: postgres-postgresql
-  DB_PORT: "5432"
-  DB_NAME: wtm
-  DB_USER: postgres
+  CLIENT_DB_HOST: postgres-postgresql
+  CLIENT_DB_PORT: "5432"
+  CLIENT_DB_NAME: wtm_client
+  CLIENT_DB_USER: postgres  
   READER_DB_HOST: postgres-postgresql
   READER_DB_PORT: "5432"
   READER_DB_NAME: wtm_reader
   READER_DB_USER: postgres
-  NOTIFICATION_DB_HOST: postgres-postgresql
-  NOTIFICATION_DB_PORT: "5432"
-  NOTIFICATION_DB_NAME: wtm_notification
-  NOTIFICATION_DB_USER: postgres
   ASSISTANCE_DB_HOST: postgres-postgresql
   ASSISTANCE_DB_PORT: "5432"
   ASSISTANCE_DB_NAME: wtm_assistance
   ASSISTANCE_DB_USER: postgres
+  LOG_2023_DB_HOST: postgres-postgresql
+  LOG_2023_DB_PORT: "5432"
   LOG_2023_DB_NAME: wtm_log_2023
   LOG_2023_DB_USER: postgres
+  LOG_2024_DB_HOST: postgres-postgresql
+  LOG_2024_DB_PORT: "5432"
   LOG_2024_DB_NAME: wtm_log_2024
   LOG_2024_DB_USER: postgres

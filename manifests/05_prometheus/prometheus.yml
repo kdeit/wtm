@@ -4,7 +4,7 @@ serverFiles:
       - job_name: 'api'
         scrape_interval: 5s
         static_configs:
-          - targets: ['client-api-asp', 'gate-asp']
+          - targets: ['client-api-asp', 'gate-asp', 'assistance-api-asp', 'assistance-sf-asp', 'reader-api-asp']
       
       - job_name: prometheus
         static_configs:

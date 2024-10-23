@@ -7,4 +7,5 @@ public class AssistanceIncidentConfirmedEvent : BaseEvent
     }
 
     public int IncidentId { get; set; }
+    public string SfId { get; set; }
 }

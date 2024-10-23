@@ -28,7 +28,11 @@ public class AssistanceBusConsumer
             Console.WriteLine($"Send to SF :: {x.IncidentId} with result ${b}");
             if (b == 1)
             {
-                _producer.SendMessage(new AssistanceSfSyncSuccessEvent() { IncidentId = x.IncidentId });
+                _producer.SendMessage(new AssistanceSfSyncSuccessEvent()
+                {
+                    IncidentId = x.IncidentId,
+                    SfId = Guid.NewGuid().ToString()
+                });
             }
             else
             {
@@ -40,8 +44,6 @@ public class AssistanceBusConsumer
         Action<AssistanceIncidentRevertedEvent> action2 = async (x) =>
         {
             Console.WriteLine($"Revert incident {x.IncidentId}");
-            
-            
         };
         _consumer.OnAssistanceIncidentReverted("kokoc", action2);
     }

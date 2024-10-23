@@ -4,14 +4,14 @@ using WTM.ReaderDAL;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-var connectionString = "Host=localhost;Database=wtm_assistance;Username=postgres;Password=postgres;Port=5432";
+var connectionString = "Host=localhost;Database=wtm_reader;Username=postgres;Password=postgres;Port=5432";
 if (!builder.Environment.IsDevelopment())
 {
-    var DB_HOST = Environment.GetEnvironmentVariable("ASSISTANCE_DB_HOST");
-    var DB_PORT = Environment.GetEnvironmentVariable("ASSISTANCE_DB_PORT");
-    var DB_NAME = Environment.GetEnvironmentVariable("ASSISTANCE_DB_NAME");
-    var DB_USER = Environment.GetEnvironmentVariable("ASSISTANCE_DB_USER");
-    var DB_PASSWORD = Environment.GetEnvironmentVariable("ASSISTANCE_DB_PASSWORD");
+    var DB_HOST = Environment.GetEnvironmentVariable("READER_DB_HOST");
+    var DB_PORT = Environment.GetEnvironmentVariable("READER_DB_PORT");
+    var DB_NAME = Environment.GetEnvironmentVariable("READER_DB_NAME");
+    var DB_USER = Environment.GetEnvironmentVariable("READER_DB_USER");
+    var DB_PASSWORD = Environment.GetEnvironmentVariable("DB_PASSWORD");
     connectionString =
         $"Host={DB_HOST};Database={DB_NAME};Username={DB_USER};Password={DB_PASSWORD};Port={DB_PORT}";
 }
@@ -40,7 +40,7 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 var context = services.GetRequiredService<ReaderContext>();
-//context.Database.EnsureDeleted();
+context.Database.EnsureDeleted();
 context.Database.EnsureCreated();
 
 app.MapControllers();

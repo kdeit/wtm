@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using OtusKdeBus;
 using OtusKdeBus.Model.Client;
 using WTM.AssistanceDAL;
+using WTM.Models;
 
 namespace OtusKdeDAL.BusConsumers;
 
@@ -20,13 +21,33 @@ public class AssistanceBusConsumer
 
     public void Init()
     {
-        Action<AssistanceIncidentCreatedEvent> action = async (x) =>
+        Action<AssistanceIncidentConfirmedEvent> action = async (x) =>
         {
-            //Console.wa
-            //_producer.SendMessage(new BillingOrderConfirmedEvent() { OrderId = x.OrderId });
-        };
-        //_consumer.OnOrderCreated("watermelon", action);
+            Console.WriteLine("Incident confirmed consumer");
+            var i = await _cnt.Incidents.FirstOrDefaultAsync(_ => _.Id == x.IncidentId);
+            if (i is null)
+            {
+                return;
+            }
 
-        
+            i.Status = IncidentStatus.OPEN;
+            i.SalesForceCaseId = x.SfId;
+            await _cnt.SaveChangesAsync();
+        };
+        _consumer.OnAssistanceIncidentConfirmed("watermelona", action);
+
+        Action<AssistanceIncidentRevertedEvent> action2 = async (x) =>
+        {
+            Console.WriteLine("Incident confirmed reverted");
+            var i = await _cnt.Incidents.FirstOrDefaultAsync(_ => _.Id == x.IncidentId);
+            if (i is null)
+            {
+                return;
+            }
+
+            i.Status = IncidentStatus.ERROR;
+            await _cnt.SaveChangesAsync();
+        };
+        _consumer.OnAssistanceIncidentReverted("watermelona", action2);
     }
 }

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OtusKdeBus;
 using OtusKdeBus.Model.Client;
 using WTM.AssistanceDAL;
@@ -20,6 +21,20 @@ public class IncidentController : Controller
         _busProducer = busProducer;
     }
 
+    [HttpGet("{incidentId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<Incident>> Create(
+        [FromHeader(Name = "X-user-id")] [Required]
+        int UserId,
+        int incidentId)
+    {
+        Console.WriteLine($"Get incident with Id {incidentId} and user {UserId}");
+
+        var res = await _cnt.Incidents.FirstOrDefaultAsync(_ => _.Id == incidentId && _.AuthorUserId == UserId);
+
+        return res is not null ? Ok(res) : NotFound();
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<int>> Create(
@@ -37,7 +52,7 @@ public class IncidentController : Controller
         };
         await _cnt.AddAsync(incident);
         await _cnt.SaveChangesAsync();
-        
+
         _busProducer.SendMessage(new AssistanceIncidentCreatedEvent()
         {
             IncidentId = incident.Id,

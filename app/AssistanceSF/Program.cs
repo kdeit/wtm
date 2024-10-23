@@ -17,7 +17,7 @@ if (!builder.Environment.IsDevelopment())
     var DB_PORT = Environment.GetEnvironmentVariable("ASSISTANCE_DB_PORT");
     var DB_NAME = Environment.GetEnvironmentVariable("ASSISTANCE_DB_NAME");
     var DB_USER = Environment.GetEnvironmentVariable("ASSISTANCE_DB_USER");
-    var DB_PASSWORD = Environment.GetEnvironmentVariable("ASSISTANCE_DB_PASSWORD");
+    var DB_PASSWORD = Environment.GetEnvironmentVariable("DB_PASSWORD");
     connectionString =
         $"Host={DB_HOST};Database={DB_NAME};Username={DB_USER};Password={DB_PASSWORD};Port={DB_PORT}";
 }

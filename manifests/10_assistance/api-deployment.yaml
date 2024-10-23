@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assistance-api-asp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: assistance-api-asp
+  template:
+    metadata:
+      labels:
+        app: assistance-api-asp
+    spec:
+      containers:
+      - name: assistance-api-asp
+        image: kdeit/wtm-assistance-asp:latest
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: app-config
+          - secretRef:
+              name: app-config

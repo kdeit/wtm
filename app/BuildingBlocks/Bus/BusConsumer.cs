@@ -17,7 +17,7 @@ public class BusConsumer : IBusConsumer
          * TODO:: get other
          */
 
-        var isProduction = Environment.GetEnvironmentVariable("DB_HOST") is not null;
+        var isProduction = Environment.GetEnvironmentVariable("DB_PASSWORD") is not null;
         var HostName = isProduction
             ? "rabbit-rabbitmq.default.svc.cluster.local"
             : "localhost";

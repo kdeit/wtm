@@ -6,6 +6,7 @@ using WTM.Models;
 namespace WinTeamGate.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class GroupController : Controller
 {
@@ -28,7 +29,6 @@ public class GroupController : Controller
     }
 
     [HttpGet("{groupId}")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Group>> GetById(int groupId)

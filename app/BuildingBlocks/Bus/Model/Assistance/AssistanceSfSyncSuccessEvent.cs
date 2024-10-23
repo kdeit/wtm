@@ -7,5 +7,5 @@ public class AssistanceSfSyncSuccessEvent : BaseEvent
     }
 
     public int IncidentId { get; set; }
-    public Guid SfId { get; set; }
+    public string SfId { get; set; }
 }

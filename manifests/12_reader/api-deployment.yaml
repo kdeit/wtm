@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reader-api-asp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: reader-api-asp
+  template:
+    metadata:
+      labels:
+        app: reader-api-asp
+    spec:
+      containers:
+      - name: reader-api-asp
+        image: kdeit/wtm-reader-asp:latest
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: app-config
+          - secretRef:
+              name: app-config

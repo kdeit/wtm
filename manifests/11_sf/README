@@ -25,10 +25,7 @@
     kubectl apply -f ./09_clients
 10 - Assistance: 
     kubectl apply -f ./10_assistance
-11 - SF: 
-    kubectl apply -f ./11_sf
-12 - Reader: 
-    kubectl apply -f ./12_reader
-13 - Logs: 
-        kubectl apply -f ./13_logs
+
+11 - Reader: 
+    kubectl apply -f ./11_reader
 

@@ -13,9 +13,14 @@ builder.Services.AddScoped<IBusProducer, BusProducer>();
 builder.Services.AddScoped<AssistanceBusConsumer>();
 builder.Services.AddScoped<IncidentCreatedSaga>();
 
+var isProduction = Environment.GetEnvironmentVariable("DB_PASSWORD") is not null;
+var HostName = isProduction
+    ? "redis-master.default.svc.cluster.local"
+    : "localhost";
+
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = "localhost";
+    options.Configuration = HostName;
     options.InstanceName = "wtm";
 });
 
@@ -26,7 +31,7 @@ if (!builder.Environment.IsDevelopment())
     var DB_PORT = Environment.GetEnvironmentVariable("ASSISTANCE_DB_PORT");
     var DB_NAME = Environment.GetEnvironmentVariable("ASSISTANCE_DB_NAME");
     var DB_USER = Environment.GetEnvironmentVariable("ASSISTANCE_DB_USER");
-    var DB_PASSWORD = Environment.GetEnvironmentVariable("ASSISTANCE_DB_PASSWORD");
+    var DB_PASSWORD = Environment.GetEnvironmentVariable("DB_PASSWORD");
     connectionString =
         $"Host={DB_HOST};Database={DB_NAME};Username={DB_USER};Password={DB_PASSWORD};Port={DB_PORT}";
 }
@@ -61,6 +66,9 @@ context.Database.EnsureCreated();
 
 var transaction = services.GetService<IncidentCreatedSaga>();
 transaction.handle();
+
+var consumer1 = services.GetService<AssistanceBusConsumer>();
+consumer1.Init();
 
 app.MapControllers();
 app.MapPrometheusScrapingEndpoint();

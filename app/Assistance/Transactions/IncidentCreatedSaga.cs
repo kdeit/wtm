@@ -21,6 +21,7 @@ public class Saga
     public bool IsMustBeReverted { get; set; }
     public SagaStatus Access { get; set; }
     public SagaStatus SfSync { get; set; }
+    public string SfId { get; set; }
 }
 
 public class IncidentCreatedSaga
@@ -35,7 +36,7 @@ public class IncidentCreatedSaga
 
     public void handle()
     {
-        var isProduction = Environment.GetEnvironmentVariable("DB_HOST") is not null;
+        var isProduction = Environment.GetEnvironmentVariable("DB_PASSWORD") is not null;
 
         var HostName = isProduction
             ? "rabbit-rabbitmq.default.svc.cluster.local"
@@ -122,6 +123,7 @@ public class IncidentCreatedSaga
             var _ = GetEventPayload<AssistanceSfSyncSuccessEvent>(ea);
             var saga = await GetSaga(_.IncidentId);
             saga.SfSync = SagaStatus.CONFIRMED;
+            saga.SfId = _.SfId;
             await CheckForComplete(saga, _.IncidentId);
         };
         _channel.BasicConsume($"Queue_{type}.{queue_name}", autoAck: true, consumerOrderCreated4);
@@ -193,7 +195,8 @@ public class IncidentCreatedSaga
         else
         {
             Console.WriteLine($"Transaction success");
-            Send(MessageType.INCIDENT_CONFIRMED, new AssistanceIncidentConfirmedEvent() { IncidentId = incidentId });
+            Send(MessageType.INCIDENT_CONFIRMED, new AssistanceIncidentConfirmedEvent()
+                { IncidentId = incidentId, SfId = saga.SfId });
         }
 
         await _cache.RemoveAsync(incidentId.ToString());
